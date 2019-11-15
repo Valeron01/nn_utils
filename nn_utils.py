@@ -47,4 +47,4 @@ def createDataset(path, bw=False, flat=False, w=-1, h=-1):
             retx.append(loadImage(image, w , h, bw, flat))
             rety.append(y)
     return np.array(retx), np.array(rety)
-    
+   
