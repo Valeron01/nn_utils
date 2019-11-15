@@ -9,14 +9,14 @@ def loadImage(path, w=-1, h=-1, bw=False, flat=False):
     if bw:
         if not flat:
             if w==-1 or h == -1:
-                return cv2.imread(path) / 255.0
-            return cv2.resize(cv2.imread(path), (w, h))
+                return cv2.imread(path) / 255
+            return cv2.resize(cv2.imread(path), (w, h))/255
         raise NotImplementedError('srry')
 
     else:
         if w==-1 or h == -1:
-            return cv2.imread(path) / 255.0
-        return cv2.resize(cv2.imread(path), (w, h))
+            return cv2.imread(path) / 255
+        return cv2.resize(cv2.imread(path), (w, h))/255
 
 def renameImages(path):
     from os import listdir
@@ -34,14 +34,17 @@ def renameDataset(path):
         renameImages(path + '\\' + i)
 
 def createDataset(path, bw=False, flat=False, w=-1, h=-1):
-    ret = []
+    retx = []
+    rety = []
     folders = [f for f in os.listdir(path) if not os.path.isfile(os.path.join(path, f))]
-    for i in folders:
+    for n, i in enumerate(folders):
         folder = path + '\\' + i
-        imgs = [f for f in listdir(folder) if isfile(join(folder, f))]
+        imgs = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+        y = np.zeros(len(folders))
+        y[n] = 1
         for i in imgs:
             image = folder + '\\' + i
-            ret.append(loadImage(image, w , h, bw, flat))
-
-    return ret
+            retx.append(loadImage(image, w , h, bw, flat))
+            rety.append(y)
+    return np.array(retx), np.array(rety)
     
