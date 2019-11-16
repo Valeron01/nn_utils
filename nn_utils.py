@@ -32,7 +32,7 @@ def renameDataset(path):
     for i in folders:
         renameImages(path + '\\' + i)
 
-def createDataset(path, bw=False, flat=False, w=-1, h=-1):
+def createDataset(path, bw=False, flat=False, w=-1, h=-1, returnDict=False):
     retx = []
     rety = []
     folders = [f for f in os.listdir(path) if not os.path.isfile(os.path.join(path, f))]
@@ -45,6 +45,8 @@ def createDataset(path, bw=False, flat=False, w=-1, h=-1):
             image = folder + '\\' + i
             retx.append(loadImage(image, w , h, bw, flat))
             rety.append(y)
+    if returnDict:
+        return np.array(retx), np.array(rety), folders
     return np.array(retx), np.array(rety)
 
 def shuffle(x, y):
