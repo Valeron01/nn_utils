@@ -3,14 +3,13 @@ import cv2 as cv2
 import os
 
 def loadImage(path, w=-1, h=-1, bw=False, flat=False):
-    
-    if bw and flat:
+    if (not bw) and flat:
         raise Exception('Error: BGR Image can not be flat')
     if bw:
         if not flat:
             if w==-1 or h == -1:
-                return cv2.imread(path) / 255
-            return cv2.resize(cv2.imread(path), (w, h))/255
+                return cv2.imread(path, 0) / 255
+            return cv2.resize(cv2.imread(path, 0), (w, h))/255
         raise NotImplementedError('srry')
 
     else:
