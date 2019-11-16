@@ -9,7 +9,7 @@ def loadImage(path, w=-1, h=-1, bw=False, flat=False):
         if not flat:
             if w==-1 or h == -1:
                 return cv2.imread(path, 0) / 255
-            return cv2.resize(cv2.imread(path, 0), (w, h))/255
+            return np.reshape(cv2.resize(cv2.imread(path, 0), (w, h))/255, (w, h, 1))
         raise NotImplementedError('srry')
 
     else:
