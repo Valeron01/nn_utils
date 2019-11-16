@@ -67,3 +67,29 @@ def shuffle(x, y):
         rety.append(y[i])
 
     return np.array(retx), np.array(rety)
+
+def getAnswer(y, voc=None):
+    i = np.argmax(y)
+
+    if voc==None:
+        return i
+    return voc[i]
+
+def evaluateModel(ypred, y, logging=False):
+    right = 0
+    ran = range(len(y))
+    a = []
+    for i, j, k in zip(ypred, y, ran):
+        if getAnswer(i) == getAnswer(j):
+            right+=1
+        else:
+            if logging:
+                a.append(k)
+    percent = right / len(y)
+    if logging:
+        return percent, right, len(y) - right, a
+    return percent, right, len(y) - right
+
+def predict(model, singleX):
+    return model.predict(np.array([singleX]))
+
