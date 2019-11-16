@@ -47,4 +47,23 @@ def createDataset(path, bw=False, flat=False, w=-1, h=-1):
             retx.append(loadImage(image, w , h, bw, flat))
             rety.append(y)
     return np.array(retx), np.array(rety)
-   
+
+def shuffle(x, y):
+    retx = []
+    rety = []
+
+    if len(x) != len(y):
+        raise Exception('Array\'s legths not equal!!: X: ' + str(len(x)) + ' Y: ' + str(len(y)))
+
+    l = len(x)
+    indexes = []
+    while len(indexes) < l:
+        n = np.random.randint(l)
+        if not n in indexes:
+            indexes.append(n)
+
+    for i in indexes:
+        retx.append(x[i])
+        rety.append(y[i])
+
+    return np.array(retx), np.array(rety)
