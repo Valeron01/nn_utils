@@ -94,3 +94,10 @@ def evaluateModel(ypred, y, logging=False):
 def predict(model, singleX):
     return model.predict(np.array([singleX]))
 
+def loadAllImages(folder, bw = False, w=-1, h=-1):
+    ret = []
+    imgs = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+    for i in imgs:
+        image = folder + '\\' + i
+        ret.append(loadImage(image, w , h, bw, flat))
+    return np.array(ret)
