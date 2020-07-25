@@ -101,3 +101,31 @@ def loadAllImages(folder, bw = False, w=-1, h=-1):
         image = folder + '\\' + i
         ret.append(loadImage(image, w , h, bw, flat))
     return np.array(ret)
+
+def draw_mask(image, mask, fill_color):
+    ret, mask = cv2.threshold(mask, 128, 255, cv2.THRESH_BINARY)
+
+    mask = np.expand_dims(mask, -1) / 255
+    mask_i = 1 - mask
+
+    colored = mask * image * fill_color / 255
+
+    result = colored + mask_i * image
+    return np.uint8(result)
+
+def draw_mask_with_contour(image, mask, fill_color, contour_color):
+    
+    ret, mask = cv2.threshold(mask, 128, 255, cv2.THRESH_BINARY)
+    canny = cv2.Canny(mask, 127, 255) / 255
+    canny = np.expand_dims(canny, -1)
+
+    mask = np.expand_dims(mask, -1) / 255 - canny
+
+    mask_i = 1 - mask - canny
+
+    colored = mask * image * fill_color / 255
+
+    contour = canny * image * contour_color / 255
+
+    result = colored + mask_i * image + contour
+    return np.uint8(result)
