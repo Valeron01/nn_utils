@@ -15,14 +15,14 @@ def crop_to_n(im, n=16):
 
 
 class Worker(threading.Thread):
-    def __init__(self, queue: Queue, path, count=-1, size=None):
-        self.size = -1 if size is None else size
+    def __init__(self, queue: Queue, path, count=-1):
 
         self.queue = queue
         self.counter = 0
         self.path = path
         self.image_paths = glob.glob(os.path.join(path, '*.*'))[:count]
         np.random.shuffle(self.image_paths)
+
         self.__is_alife = True
 
         super().__init__(daemon=True)
@@ -35,11 +35,8 @@ class Worker(threading.Thread):
                     np.random.shuffle(self.image_paths)
 
                 image = cv2.imread(self.image_paths[self.counter])
-
-                h, w = image.shape[:2]
-
-                if h >= self.size and w >= self.size:
-                    self.queue.put(image[:self.size, :self.size])
+                
+                self.queue.put(image)
                 self.counter += 1
             time.sleep(0.001)
 
@@ -48,7 +45,9 @@ class Worker(threading.Thread):
 
 
 class DataGenerator:
-    def __init__(self, path, size=None, batch_size=1, crop_to=1, aug_fun=lambda x: x):
+    def __init__(self, path, size=None, batch_size=1, crop_to=1,
+                 pre_fun=lambda x: x, post_fun=lambda x: x):
+        
         self.batch_size = batch_size
 
         self.queue = Queue(100)
@@ -56,7 +55,10 @@ class DataGenerator:
         self.worker.start()
         self.size = size
         self.crop_to = crop_to
-        self.aug_fun = aug_fun
+
+        self.post_fun = post_fun
+        self.pre_fun = pre_fun
+
 
     def get_random_images(self):
         assert self.batch_size > 0
@@ -66,11 +68,11 @@ class DataGenerator:
 
         for i in range(self.batch_size):
             input = self.queue.get()
-            input = crop_to_n(input, self.crop_to)
-
+            input = self.pre_fun(input)
+            
             inputs.append(input)
 
-            outputs.append(self.aug_fun(input))
+            outputs.append(self.post_fun(input))
 
         return np.float32(inputs), np.float32(outputs)
 
