@@ -51,7 +51,7 @@ class DataGenerator:
         self.batch_size = batch_size
 
         self.queue = Queue(100)
-        self.worker = Worker(self.queue, path, size=size)
+        self.worker = Worker(self.queue, path)
         self.worker.start()
         self.size = size
         self.crop_to = crop_to
@@ -69,7 +69,7 @@ class DataGenerator:
         for i in range(self.batch_size):
             input = self.queue.get()
             input = self.pre_fun(input)
-            
+
             inputs.append(input)
 
             outputs.append(self.post_fun(input))
