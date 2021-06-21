@@ -1,7 +1,6 @@
 import numpy as np
 import cv2 as cv2
 import os
-import image_loader
 
 
 def loadImage(path, w=-1, h=-1, bw=False, flat=False):
